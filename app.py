@@ -24,14 +24,13 @@ peak1 = s1.idxmax()       # Timestamp of Series A’s high
 peak2 = s2.idxmax()       # Timestamp of Series B’s high
 shift  = peak2 - peak1    # pandas.Timedelta
 
-# ——— Vectorized shift of Series B’s index ———
-s2_shifted = s2.copy()
-s2_shifted.index = s2.index - shift
+# ——— Compute shifted x-values for series B (no assignment to index) ———
+shifted_dates = s2.index - shift
 
 # ——— Plot both series with aligned peak ———
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(s1.index,        s1.values,      label="Dec ’21–May ’22")
-ax.plot(s2_shifted.index, s2_shifted.values, label="Dec ’24–May ’25 (shifted)")
+ax.plot(shifted_dates,   s2.values,      label="Dec ’24–May ’25 (shifted)")
 ax.axvline(peak1, color="gray", linestyle="--", label="Aligned Peak")
 
 ax.set_xlabel("Date")
