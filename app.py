@@ -20,14 +20,13 @@ s1 = fetch_close("2021-12-01", "2022-06-01")  # Dec ’21 → May ’22
 s2 = fetch_close("2024-12-01", "2025-06-01")  # Dec ’24 → May ’25
 
 # ——— Identify peaks and compute shift ———
-peak1 = s1.idxmax()       # Timestamp of series A’s highest close
-peak2 = s2.idxmax()       # Timestamp of series B’s highest close
+peak1 = s1.idxmax()       # Timestamp of Series A’s high
+peak2 = s2.idxmax()       # Timestamp of Series B’s high
 shift  = peak2 - peak1    # pandas.Timedelta
 
-# ——— Apply manual element-wise shift to series B ———
+# ——— Vectorized shift of Series B’s index ———
 s2_shifted = s2.copy()
-new_dates = [ts - shift for ts in s2_shifted.index]
-s2_shifted.index = new_dates
+s2_shifted.index = s2.index - shift
 
 # ——— Plot both series with aligned peak ———
 fig, ax = plt.subplots(figsize=(10, 5))
