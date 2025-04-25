@@ -1,0 +1,28 @@
+import yfinance as yf
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# 1. Download S&P 500 data
+dfA = yf.download("^GSPC", start="2021-12-01", end="2022-06-01", progress=False)
+dfB = yf.download("^GSPC", start="2024-12-01", end="2025-06-01", progress=False)
+
+# 2. Identify peak dates
+peakA = dfA['Close'].idxmax()
+peakB = dfB['Close'].idxmax()
+
+# 3. Shift second series to align peaks
+shift = peakB - peakA
+dfB_shifted = dfB.copy()
+dfB_shifted.index = dfB_shifted.index - shift
+
+# 4. Plot overlay
+plt.figure(figsize=(10, 5))
+plt.plot(dfA.index, dfA['Close'], label='Dec ’21–May ’22')
+plt.plot(dfB_shifted.index, dfB_shifted['Close'], label='Dec ’24–May ’25 (shifted)')
+plt.axvline(peakA, linestyle='--', label='Aligned peak')
+plt.legend()
+plt.title("S&P 500 Overlay: Peaks Aligned")
+plt.xlabel("Date")
+plt.ylabel("Close Price")
+plt.tight_layout()
+plt.show()
