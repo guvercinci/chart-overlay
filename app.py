@@ -51,16 +51,22 @@ shift = peak2 - peak1
 shifted_dates = [ts - shift for ts in s2_norm.index]
 
 # Build DataFrames for plotting
-# Series A
-df_a = s1_norm.to_frame(name='value').reset_index().rename(columns={'index': 'date'})
+df_a = pd.DataFrame({
+    'date': s1_norm.index,
+    'value': s1_norm.values,
+})
 df_a['series'] = 'A'
+
 # Series B
-df_b = pd.DataFrame({'date': shifted_dates, 'value': s2_norm.values})
+# shifted_dates corresponds to s2_norm.index shifted by the peak offset
+df_b = pd.DataFrame({
+    'date': shifted_dates,
+    'value': s2_norm.values,
+})
 df_b['series'] = 'B'
 
 # Combine and sort
-df_all = pd.concat([df_a, df_b], ignore_index=True)
-df_all = df_all.sort_values('date')
+df_all = pd.concat([df_a, df_b], ignore_index=True).sort_values('date')
 
 # Create interactive Altair chart
 tooltip = ['date:T', 'value:Q', 'series:N']
