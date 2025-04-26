@@ -45,12 +45,12 @@ s2_norm = s2 / s2.max() * 100
 # Align peaks by computing shift
 peak1 = s1_norm.idxmax()
 peak2 = s2_norm.idxmax()
-shift = peak2 - peak1
+shift  = peak2 - peak1
 
 # Shift series B dates
 shifted_dates = [ts - shift for ts in s2_norm.index]
 
-# Build DataFrames for plotting with 1D lists
+# Build DataFrames for plotting
 # Series A
 df_a = pd.DataFrame({
     'date': list(s1_norm.index),
@@ -65,8 +65,10 @@ df_b = pd.DataFrame({
 })
 df_b['series'] = 'B'
 
-# Combine and sort
-df_all = pd.concat([df_a, df_b], ignore_index=True).sort_values('date')
+# Combine, convert date column to datetime, and sort
+df_all = pd.concat([df_a, df_b], ignore_index=True)
+df_all['date'] = pd.to_datetime(df_all['date'])
+df_all = df_all.sort_values('date')
 
 # Create interactive Altair chart
 tooltip = ['date:T', 'value:Q', 'series:N']
