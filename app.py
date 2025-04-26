@@ -24,13 +24,13 @@ peak1 = s1.idxmax()
 peak2 = s2.idxmax()
 shift = peak2 - peak1  # pandas.Timedelta
 
-# Manually shift the second period's dates
+# Create a list of shifted dates (manual subtraction for each timestamp)
 shifted_dates = [ts - shift for ts in s2.index]
 
 # Plot both series on the same axes with the peaks aligned
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(s1.index,       s1.values,      label="Dec ’21–May ’22")
-ax.plot(shifted_dates,  s2.values,      label="Dec ’24–May ’25 (shifted)")
+ax.plot(s1.index,        s1.values,      label="Dec ’21–May ’22")
+ax.plot(shifted_dates,   s2.values,      label="Dec ’24–May ’25 (shifted)")
 ax.axvline(peak1, color="gray", linestyle="--", label="Aligned Peak")
 
 # Formatting
