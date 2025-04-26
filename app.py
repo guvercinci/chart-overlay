@@ -65,10 +65,9 @@ df_b = pd.DataFrame({
 })
 df_b['series'] = 'B'
 
-# Combine, convert date column to datetime, and sort
+# Combine and ensure date column is datetime
 df_all = pd.concat([df_a, df_b], ignore_index=True)
 df_all['date'] = pd.to_datetime(df_all['date'])
-df_all = df_all.sort_values('date')
 
 # Create interactive Altair chart
 tooltip = ['date:T', 'value:Q', 'series:N']
@@ -85,4 +84,4 @@ chart = (
         .interactive()
 )
 
-st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart, use_container_width=True)(chart, use_container_width=True)
