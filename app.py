@@ -12,15 +12,19 @@ st.title("S&P 500 Overlay: Peaks Aligned and Normalized")
 today = date.today()
 col1, col2 = st.sidebar.columns(2)
 with col1:
-    start_a = st.date_input("Series A start date", value=date(2021, 12, 1), max_value=today)
+    start_a = st.date_input(
+        "Series A start date", value=date(2021, 12, 1), max_value=today
+    )
 with col2:
-    start_b = st.date_input("Series B start date", value=date(2024, 12, 1), max_value=today)
+    start_b = st.date_input(
+        "Series B start date", value=date(2024, 12, 1), max_value=today
+    )
 
 # Compute end dates as one year later
 df1_start = pd.to_datetime(start_a)
-df1_end   = df1_start + pd.DateOffset(years=1)
+df1_end = df1_start + pd.DateOffset(years=1)
 df2_start = pd.to_datetime(start_b)
-df2_end   = df2_start + pd.DateOffset(years=1)
+df2_end = df2_start + pd.DateOffset(years=1)
 
 @st.cache_data
 def fetch_close(start: str, end: str) -> pd.Series:
@@ -45,16 +49,20 @@ shift = peak2 - peak1
 shifted_dates = [ts - shift for ts in s2_norm.index]
 
 # Build a combined DataFrame for plotting
+# Ensure 'series' column has correct length
 df_a = pd.DataFrame({
     'date': s1_norm.index,
     'value': s1_norm.values,
-    'series': 'A'
+    'series': ['A'] * len(s1_norm)
 })
+
 df_b = pd.DataFrame({
     'date': shifted_dates,
     'value': s2_norm.values,
-    'series': 'B'
+    'series': ['B'] * len(s2_norm)
 })
+
+# Concatenate and sort by date
 df_all = pd.concat([df_a, df_b], ignore_index=True)
 
 # Interactive Altair chart
