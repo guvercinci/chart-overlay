@@ -22,9 +22,9 @@ with col2:
 
 # Compute end dates one year later
 df1_start = pd.to_datetime(start_a)
-df1_end = df1_start + pd.DateOffset(years=1)
+df1_end   = df1_start + pd.DateOffset(years=1)
 df2_start = pd.to_datetime(start_b)
-df2_end = df2_start + pd.DateOffset(years=1)
+df2_end   = df2_start + pd.DateOffset(years=1)
 
 @st.cache_data
 def fetch_close(start: str, end: str) -> pd.Series:
@@ -50,18 +50,18 @@ shift = peak2 - peak1
 # Shift series B dates
 shifted_dates = [ts - shift for ts in s2_norm.index]
 
-# Build DataFrames for plotting
+# Build DataFrames for plotting with 1D lists
+# Series A
 df_a = pd.DataFrame({
-    'date': s1_norm.index,
-    'value': s1_norm.values,
+    'date': list(s1_norm.index),
+    'value': list(s1_norm.values),
 })
 df_a['series'] = 'A'
 
 # Series B
-# shifted_dates corresponds to s2_norm.index shifted by the peak offset
 df_b = pd.DataFrame({
     'date': shifted_dates,
-    'value': s2_norm.values,
+    'value': list(s2_norm.values),
 })
 df_b['series'] = 'B'
 
