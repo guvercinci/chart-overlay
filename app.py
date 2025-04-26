@@ -20,7 +20,7 @@ with col2:
         "Series B start date", value=date(2024, 12, 1), max_value=today
     )
 
-# Compute end dates as one year later
+# Compute end dates one year later
 df1_start = pd.to_datetime(start_a)
 df1_end = df1_start + pd.DateOffset(years=1)
 df2_start = pd.to_datetime(start_b)
@@ -34,38 +34,34 @@ def fetch_close(start: str, end: str) -> pd.Series:
     df = yf.download("^GSPC", start=start, end=end, progress=False)
     return df["Close"]
 
-# Fetch data for both windows
+# Fetch data for both periods
 s1 = fetch_close(df1_start.strftime('%Y-%m-%d'), df1_end.strftime('%Y-%m-%d'))
 s2 = fetch_close(df2_start.strftime('%Y-%m-%d'), df2_end.strftime('%Y-%m-%d'))
 
-# Normalize to percent from peak (peak => 100)
+# Normalize series to percent-from-peak
 s1_norm = s1 / s1.max() * 100
 s2_norm = s2 / s2.max() * 100
 
-# Align peaks by shifting dates
-peak1 = s1_norm.idxmax()
+# Align peaks by computing shift\ npeak1 = s1_norm.idxmax()
 peak2 = s2_norm.idxmax()
 shift = peak2 - peak1
+
+# Shift series B dates
 shifted_dates = [ts - shift for ts in s2_norm.index]
 
-# Build a combined DataFrame for plotting
-# Ensure 'series' column has correct length
-df_a = pd.DataFrame({
-    'date': s1_norm.index,
-    'value': s1_norm.values,
-    'series': ['A'] * len(s1_norm)
-})
+# Build DataFrames for plotting
+# Series A
+df_a = s1_norm.to_frame(name='value').reset_index().rename(columns={'index': 'date'})
+df_a['series'] = 'A'
+# Series B
+df_b = pd.DataFrame({'date': shifted_dates, 'value': s2_norm.values})
+df_b['series'] = 'B'
 
-df_b = pd.DataFrame({
-    'date': shifted_dates,
-    'value': s2_norm.values,
-    'series': ['B'] * len(s2_norm)
-})
-
-# Concatenate and sort by date
+# Combine and sort
 df_all = pd.concat([df_a, df_b], ignore_index=True)
+df_all = df_all.sort_values('date')
 
-# Interactive Altair chart
+# Create interactive Altair chart
 tooltip = ['date:T', 'value:Q', 'series:N']
 chart = (
     alt.Chart(df_all)
