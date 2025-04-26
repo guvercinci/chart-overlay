@@ -42,7 +42,8 @@ s2 = fetch_close(df2_start.strftime('%Y-%m-%d'), df2_end.strftime('%Y-%m-%d'))
 s1_norm = s1 / s1.max() * 100
 s2_norm = s2 / s2.max() * 100
 
-# Align peaks by computing shift\ npeak1 = s1_norm.idxmax()
+# Align peaks by computing shift
+peak1 = s1_norm.idxmax()
 peak2 = s2_norm.idxmax()
 shift = peak2 - peak1
 
